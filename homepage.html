@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Fetch starting point</title>
+
+        <style>
+        html{
+            font-family: sans-serif;
+        }
+
+        body {
+            width: 900px;
+            margin: 0 auto;
+            background-color: #ccc;
+        }
+
+        </style>
+
+    </head>
+
+    <body>
+        <h1>Home Page</h1>
+
+        <div class="username_form">
+            <label for="username">Username: </label>
+            <input type="text" class="username">
+        </div>
+        <div class="password_form">
+            <label for="password">Password: </label>
+            <input type="text" class="password">
+        </div>
+        <div class="submit_register">
+            <input type="submit" class="Login" value="登入">
+        </div>
+        <div>
+            <p>Click this link to register your account:
+            <a href="register.html">link</a>.
+            </p>
+        </div>
+
+        <script>
+            document.cookie = "sessionId=; Max-Age=0";
+            console.log(document.cookie);
+            const usernameText = document.querySelector(".username");
+            const passwordText = document.querySelector(".password");
+            const loginButton = document.querySelector(".Login");
+
+            function submitAccount(){
+                var username = usernameText.value;
+                var password = passwordText.value;
+                const url = "homepage.html";
+                var account = {"username":username,"password":password};
+                var accountString = JSON.stringify(account);
+                fetch(url,{
+                    method: 'POST',
+                    body: accountString
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            alert("HTTP failed. Please try again.");
+                            throw new Error(`HTTP error: ${response.status}`);
+                        }
+                        else{
+                            console.log(document.cookie);
+                            if (document.cookie){
+                                alert("You have logged in successfully!");
+                                //alert(document.cookie)
+                                window.location.assign("bulletin_board.html");
+                            }
+                            else{
+                                alert("The username or password is wrong!");
+                            }
+                        }
+                    })
+                    .catch((err) => console.error(`Failed to log in: ${err.message}`));
+            }
+
+            loginButton.addEventListener('click',submitAccount);
+        </script>
+    </body>
+</html>

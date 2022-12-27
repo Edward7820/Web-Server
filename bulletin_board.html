@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Fetch starting point</title>
+
+        <style>
+        html, pre {
+            font-family: sans-serif;
+        }
+
+        body {
+            width: 900px;
+            margin: 0 auto;
+            background-color: #ccc;
+        }
+
+        pre {
+            line-height: 1.0;
+            letter-spacing: 0.05rem;
+            padding: 1rem;
+            background-color: white;
+        }
+
+        </style>
+
+    </head>
+
+    <body>
+        <h1>Message Board</h1>
+
+        <div class="form">
+            <label for="messageText">Enter a message: </label>
+            <input type="text" class="messageText">
+            <input type="submit" class="messageSubmit">
+            <input style="float:right" type="button" value="logout" class="logout">
+        </div>
+
+        <script>
+            const messageText = document.querySelector('.messageText');
+            const messageSubmit = document.querySelector('.messageSubmit');
+            const logout = document.querySelector('.logout');
+            const body = document.querySelector('body');
+
+            function addNewMessage(){
+                var newmessage = messageText.value;
+                const url = 'messages.json';
+                fetch(url,{
+                    method: 'POST',
+                    body: newmessage
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            alert("HTTP failed. Please try again.");
+                            throw new Error(`HTTP error: ${response.status}`);
+                        }
+                        return response.json()
+                    })
+                    .then((json) => displayMessages(json))
+                    .catch((err) => console.error(`Failed to display messages: ${err.message}`));
+            }
+
+            function displayMessages(jsonData){
+                console.log(jsonData);
+                if (jsonData){
+                    const messageSections = document.querySelectorAll('pre');
+                    for (let i=0;i<messageSections.length;i++){
+                        messageSections[i].parentNode.removeChild(messageSections[i]);
+                    }
+                    for (i in jsonData){
+                        console.log(jsonData[i]);
+                        const message = document.createElement('pre');
+                        message.textContent = jsonData[i]['username']+': '+jsonData[i]['message'];
+                        body.appendChild(message);
+                    }
+                }
+            }
+
+            function sendLogout(){
+                const url = 'bulletin_board.html';
+                fetch(url,{
+                    method: 'POST',
+                    body: 'logout'
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            alert("HTTP failed. Please try again.");
+                            throw new Error(`HTTP error: ${response.status}`);
+                        }
+                        else{
+                            alert("You have logged out.");
+                            //alert(document.cookie);
+                            window.location.assign("homepage.html");
+                        }
+                    })
+            }
+
+            messageText.value=''
+            addNewMessage()
+            messageSubmit.addEventListener('click',addNewMessage);
+            logout.addEventListener('click',sendLogout);
+        </script>
+    </body>
+</html>

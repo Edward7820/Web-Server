@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Fetch starting point</title>
+
+        <style>
+        html{
+            font-family: sans-serif;
+        }
+
+        body {
+            width: 900px;
+            margin: 0 auto;
+            background-color: #ccc;
+        }
+
+        </style>
+
+    </head>
+
+    <body>
+        <h1>Please register your account here</h1>
+
+        <div class="username_form">
+            <label for="username">Username: </label>
+            <input type="text" class="username">
+        </div>
+        <div class="password_form">
+            <label for="password">Password: </label>
+            <input type="text" class="password">
+        </div>
+        <div class="submit_register">
+            <input type="submit" class="registerSubmit">
+        </div>
+        <div>
+            <p>Click this link to go back to homepage:
+            <a href="homepage.html">link</a>.
+            </p>
+        </div>
+
+        <script>
+            const usernameText = document.querySelector(".username");
+            const passwordText = document.querySelector(".password");
+            const submitButton = document.querySelector(".registerSubmit");
+
+            function submitAccount(){
+                var username = usernameText.value;
+                var password = passwordText.value;
+                const url = "register.html";
+                var account = {"username":username,"password":password};
+                var accountString = JSON.stringify(account);
+                fetch(url,{
+                    method: 'POST',
+                    body: accountString
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error: ${response.status}`);
+                        }
+                        else{
+                            alert("You have registered your account successfully! Please go back to homepage to log in.");
+                        }
+                    })
+                    .catch((err) => console.error(`Failed to register user account: ${err.message}`));
+            }
+
+            submitButton.addEventListener('click',submitAccount);
+        </script>
+    </body>
+</html>
